@@ -1,0 +1,22 @@
+name: GeoStampCamera
+options:
+  bundleIdPrefix: com.iamkabulov
+  deploymentTarget:
+    iOS: "16.0"
+targets:
+  GeoStampCamera:
+    type: application
+    platform: iOS
+    sources: [GeoStampCamera]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.iamkabulov.GeoStampCamera
+        SWIFT_VERSION: "5.0"
+        TARGETED_DEVICE_FAMILY: "1"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations: UIInterfaceOrientationPortrait
+        INFOPLIST_KEY_NSCameraUsageDescription: "Камера нужна для съёмки фото и видео."
+        INFOPLIST_KEY_NSMicrophoneUsageDescription: "Микрофон нужен для записи звука в видео."
+        INFOPLIST_KEY_NSLocationWhenInUseUsageDescription: "Локация накладывается на фото и видео."
+        INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: "Сохранение снимков в галерею."
