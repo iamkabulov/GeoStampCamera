@@ -7,7 +7,7 @@ argument-hint: <PR URL | owner/repo#number>
 
 # review-pr
 
-Follow these steps exactly as written, in order. Do not skip, reorder, merge, or add steps. Do not take any action that is not listed here. You are read-only until Step 8: never modify files, commit, push, approve, merge, or comment on a PR before then.
+Follow these steps exactly as written, in order. Do not skip, reorder, merge, or add steps. Do not take any action that is not listed here. You are read-only until Step 6: never modify files, commit, push, approve, merge, or comment on a PR before then.
 
 Input: `$ARGUMENTS` — the PR to review. If it is empty, ask the user for the PR URL or `owner/repo#number` and stop until they answer.
 
@@ -18,35 +18,19 @@ Input: `$ARGUMENTS` — the PR to review. If it is empty, ask the user for the P
 3. If the diff is empty, report exactly "No changes to review" and stop.
 4. Record the changed files in the order they appear in the diff. Every one of them must appear in the final output.
 
-## Step 2 — Apply swift-conventions to Swift files
+## Step 2 — Run the reviewer subagents
 
-1. For every changed file ending in `.swift`, load the `swift-conventions` skill and check the changed lines against each of its rules.
-2. Map its severities to the output format: CRITICAL → BLOCKER, MAJOR → MAJOR, anything lower → MINOR.
-3. If there are no `.swift` files, skip this step.
+Launch these three subagents in parallel (one message, three Agent calls). Give each one the full diff from Step 1 and the ordered list of changed files. The subagents have no GitHub access, so the diff in the prompt is all they see.
 
-## Step 3 — Apply kotlin-conventions to Kotlin files
+1. `style-reviewer`: checks Swift and Kotlin files against the conventions skills.
+2. `security-reviewer`: checks every file for security and privacy issues.
+3. `architecture-reviewer`: checks the diff against the project architecture.
 
-1. For every changed file ending in `.kt` or `.kts`, load the `kotlin-conventions` skill and check the changed lines against each of its rules.
-2. Map its severities the same way as in Step 2.
-3. If there are no Kotlin files, skip this step. If there are Kotlin files but the `kotlin-conventions` skill is not available, note "kotlin-conventions skill not found — Kotlin conventions not checked" under Questions for the author and continue.
+Wait for all three to finish. If one fails, keep going and add a note that its area was not covered.
 
-## Step 4 — Flag security issues
+## Step 3 — Compile findings into the output format
 
-Check every changed file (any language, including config such as `project.yml`, `Info.plist`, Gradle files) for:
-
-- Hard-coded secrets, tokens, API keys, or credentials
-- Location coordinates, addresses, or other personal data logged, printed, or sent off-device
-- New camera, microphone, location, or Photos access without a matching `INFOPLIST_KEY_*` usage string in `project.yml`
-- Insecure networking (plain `http://`, disabled ATS, disabled certificate validation)
-- Unsafe storage of sensitive data (UserDefaults or plain files instead of Keychain)
-- Injection risks (unsanitized input in URLs, SQL, shell, or web views)
-- Debug or logging code that leaks sensitive data in release builds
-
-Tag each security finding `Security:` at the start of its problem text and give it a severity of BLOCKER or MAJOR.
-
-## Step 5 — Compile findings into the output format
-
-Combine the results of Steps 2–4 with the project review criteria from `CLAUDE.md` (PR Review Agent section) into one Markdown document with these H2 sections, in this order:
+Combine the subagent results from Step 2 with the project review criteria from `CLAUDE.md` (PR Review Agent section) into one Markdown document with these H2 sections, in this order:
 
 ```
 ## Findings
@@ -73,11 +57,11 @@ Rules:
 - Do not include author names or internal ticket IDs.
 - Do at most 2 review passes. If something could not be covered, add a note saying what was not covered.
 
-## Step 6 — Present the review
+## Step 4 — Present the review
 
-Show the complete review draft from Step 5 to the user.
+Show the complete review draft from Step 3 to the user.
 
-## Step 7 — Ask for confirmation before posting
+## Step 5 — Ask for confirmation before posting
 
 Immediately after the draft, ask exactly:
 
@@ -85,9 +69,9 @@ Immediately after the draft, ask exactly:
 
 Then stop and wait for the user's reply. Do not call any GitHub write tool before the user replies.
 
-## Step 8 — Post only on "yes" or "post"
+## Step 6 — Post only on "yes" or "post"
 
 - If the reply is exactly `yes` or `post` (case-insensitive, ignoring surrounding whitespace and punctuation): post the review using the GitHub MCP write tools (`pull_request_review_write` / `add_comment_to_pending_review`) as a **COMMENT** only — never with the APPROVE or REQUEST_CHANGES event. Then report the link to the posted review.
-- Any other reply — including "no", a question, an edit request, or no reply — means do not post. Say "Review not posted." If the user asked for changes, revise the draft, then go back to Step 6.
+- Any other reply — including "no", a question, an edit request, or no reply — means do not post. Say "Review not posted." If the user asked for changes, revise the draft, then go back to Step 3.
 
 Never approve, merge, close, or push to the PR under any circumstances.
