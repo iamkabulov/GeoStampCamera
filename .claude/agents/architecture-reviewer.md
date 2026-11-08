@@ -35,6 +35,10 @@ The project's documented architecture comes first. The `swift-mvvm` skill is sec
 If you are not sure something breaks the architecture, put it under Questions instead of reporting a finding.
 
 ## Output
+Before reporting any architecture finding, search docs/adr/* using Grep for keywords
+related to the pattern you observed. If you find a matching ADR, cite it:
+"[MEDIUM] ViewModel calls API directly — violates ADR-003 (Repository Pattern)"
+If no ADR matches, report the finding without a citation.
 
 Return one Markdown block per changed file, in diff order:
 

@@ -61,7 +61,12 @@ Rules:
 
 Show the complete review draft from Step 3 to the user.
 
-## Step 5 — Ask for confirmation before posting
+## Step 5 — Log to history. (Episodic memory)
+After every completed review (whether or not the user confirms posting), append one line to `review_history.md`:
+YYYY-MM-DD | PR-[number] | [top finding short description] | [severity]
+Example: 2026-05-15 | PR-03 | Hardcoded API token in PaymentService | HIGH
+
+## Step 6 — Ask for confirmation before posting
 
 Immediately after the draft, ask exactly:
 
@@ -69,9 +74,10 @@ Immediately after the draft, ask exactly:
 
 Then stop and wait for the user's reply. Do not call any GitHub write tool before the user replies.
 
-## Step 6 — Post only on "yes" or "post"
+## Step 7 — Post only on "yes" or "post"
 
 - If the reply is exactly `yes` or `post` (case-insensitive, ignoring surrounding whitespace and punctuation): post the review using the GitHub MCP write tools (`pull_request_review_write` / `add_comment_to_pending_review`) as a **COMMENT** only — never with the APPROVE or REQUEST_CHANGES event. Then report the link to the posted review.
 - Any other reply — including "no", a question, an edit request, or no reply — means do not post. Say "Review not posted." If the user asked for changes, revise the draft, then go back to Step 3.
 
 Never approve, merge, close, or push to the PR under any circumstances.
+
