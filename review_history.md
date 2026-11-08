@@ -9,3 +9,11 @@
 2026-11-08 | PR-04 | Trips URL sends literal {userId}; userId never substituted in TripViewModel | BLOCKER
 2026-11-08 | PR-04 | userId never interpolated into trips URL path | BLOCKER
 2026-11-08 | PR-04 | userId never interpolated into trips URL path | BLOCKER
+2026-11-08 | PR-01 | try? swallows recentRides() errors, failed load shown as empty list in RideHistoryViewModel | MAJOR
+2026-11-08 | PR-02 | FetchProfile completion delivered on background queue, no main-actor hop in ProfileViewModel | MAJOR
+2026-11-08 | PR-01 | try? swallows recentRides() errors, failed load shown as empty list in RideHistoryViewModel | MAJOR
+2026-11-08 | PR-01 | try? swallows recentRides() errors, failed load shown as empty list in RideHistoryViewModel | MAJOR
+2026-11-08 | PR-02 | FetchProfile completion delivered on background queue, no main-actor hop in ProfileViewModel | MAJOR
+2026-11-08 | PR-03 | Hardcoded live payments API key in PaymentService | BLOCKER
+2026-11-08 | PR-04 | userId never interpolated into trips URL path | BLOCKER
+2026-11-08 | PR-05 | Hardcoded live client secret in CheckoutViewModel, sent in request body | BLOCKER
