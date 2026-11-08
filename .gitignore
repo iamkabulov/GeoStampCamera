@@ -10,3 +10,4 @@ build/
 
 # MCP server config (token comes from env, but keep local config out of git)
 .mcp.json
+.idea
